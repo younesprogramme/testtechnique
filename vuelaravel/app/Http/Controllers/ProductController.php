@@ -54,4 +54,13 @@ class ProductController extends Controller
        return $this->model->show($id);
     }
 
+    public function update(Request $request, $id)
+    {
+       $this->model->update($request->all(), $id);
+    }
+
+    public function destroy($id)
+    {
+       return $this->model->delete($id);
+    }
 }

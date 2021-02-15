@@ -20,3 +20,4 @@ Route::get('getcategories', 'CategoryController@get');
 Route::get('getproducts', 'ProductController@get');
 Route::post('filterbycategory', 'ProductController@filter');
 Route::post('sortby', 'ProductController@sort');
+Route::post('deleteproduct', 'ProductController@delete');

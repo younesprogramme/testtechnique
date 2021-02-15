@@ -31,7 +31,7 @@
       <span
         ><strong>{{ item.price }} DH</strong></span
       >
-      <button class="btn btn-warning">Delete</button>
+      <button class="btn btn-warning" @click="deleteProduct(item.id)">Delete</button>
     </div>
   </div>
 </template>
@@ -98,6 +98,18 @@ export default {
         .then((response) => {
           this.products = response.data;
           console.log(event.target.selectedOptions[0].dataset.hex);
+        })
+        .catch(function (error) {
+          console.log(error.response);
+        });
+    },
+     deleteProduct(id) {
+      axios
+        .post("api/deleteproduct", { id: id })
+        .then((response) => {
+          this.products = response.data;
+          alert('Product deleted')
+          this.loadProducts();
         })
         .catch(function (error) {
           console.log(error.response);

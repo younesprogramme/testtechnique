@@ -19,8 +19,6 @@ class Repository implements RepositoryInterface
         return $this->model->all();
     }
     
-
-
     public function filter($id)
     {
         return $this->model->all()->where('category',$id);

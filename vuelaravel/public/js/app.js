@@ -2026,6 +2026,20 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         console.log(error.response);
       });
+    },
+    deleteProduct: function deleteProduct(id) {
+      var _this5 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("api/deleteproduct", {
+        id: id
+      }).then(function (response) {
+        _this5.products = response.data;
+        alert('Product deleted');
+
+        _this5.loadProducts();
+      })["catch"](function (error) {
+        console.log(error.response);
+      });
     }
   }
 });
@@ -37711,7 +37725,18 @@ var render = function() {
           _vm._v("\n    " + _vm._s(item.description) + "\n    "),
           _c("span", [_c("strong", [_vm._v(_vm._s(item.price) + " DH")])]),
           _vm._v(" "),
-          _c("button", { staticClass: "btn btn-warning" }, [_vm._v("Delete")])
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-warning",
+              on: {
+                click: function($event) {
+                  return _vm.deleteProduct(item.id)
+                }
+              }
+            },
+            [_vm._v("Delete")]
+          )
         ])
       })
     ],
