@@ -2000,6 +2000,32 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         console.log(error.response);
       });
+    },
+    filterbyCategory: function filterbyCategory(event) {
+      var _this3 = this;
+
+      console.log(event.target.value);
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/filterbycategory", {
+        category: event.target.value
+      }).then(function (response) {
+        console.log(response.data);
+        _this3.products = response.data;
+      })["catch"](function (error) {
+        console.log(error.response);
+      });
+    },
+    sortBy: function sortBy(event) {
+      var _this4 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/sortby", {
+        orderby: event.target.value,
+        sortby: event.target.selectedOptions[0].dataset.hex
+      }).then(function (response) {
+        _this4.products = response.data;
+        console.log(event.target.selectedOptions[0].dataset.hex);
+      })["catch"](function (error) {
+        console.log(error.response);
+      });
     }
   }
 });
@@ -37620,6 +37646,13 @@ var render = function() {
       _vm._v(" "),
       _c(
         "select",
+        {
+          on: {
+            change: function($event) {
+              return _vm.sortBy($event)
+            }
+          }
+        },
         [
           _c("option", { attrs: { selected: "", value: "" } }, [_vm._v("All")]),
           _vm._v(" "),
@@ -37642,6 +37675,13 @@ var render = function() {
       _vm._v(" "),
       _c(
         "select",
+        {
+          on: {
+            change: function($event) {
+              return _vm.filterbyCategory($event)
+            }
+          }
+        },
         [
           _c("option", { attrs: { selected: "", value: "" } }, [_vm._v("All")]),
           _vm._v(" "),

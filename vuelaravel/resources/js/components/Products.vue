@@ -2,7 +2,7 @@
   <div class="form-group">
     <h2>Product list</h2>
     <span>Sort by</span>
-    <select>
+    <select @change="sortBy($event)">
       <option selected value="">All</option>
       <option  v-for="option in options" v-bind:key="option.id" v-bind:value="option.value"
       :data-hex="option.sortby">
@@ -10,7 +10,7 @@
       </option>
     </select>
     <span>Filter by category</span>
-    <select>
+    <select @change="filterbyCategory($event)">
       <option selected value="">All</option>
       <option v-for="category in categories" v-bind:key="category.id">
         {{ category.name }}
@@ -72,6 +72,32 @@ export default {
         .get("/api/getproducts")
         .then((response) => {
           this.products = response.data;
+        })
+        .catch(function (error) {
+          console.log(error.response);
+        });
+    },
+    filterbyCategory(event) {
+      console.log(event.target.value);
+      axios
+        .post("/api/filterbycategory", { category: event.target.value })
+        .then((response) => {
+          console.log(response.data);
+          this.products = response.data;
+        })
+        .catch(function (error) {
+          console.log(error.response);
+        });
+    },
+     sortBy(event) {
+      axios
+        .post("/api/sortby", {
+          orderby: event.target.value,
+          sortby: event.target.selectedOptions[0].dataset.hex,
+        })
+        .then((response) => {
+          this.products = response.data;
+          console.log(event.target.selectedOptions[0].dataset.hex);
         })
         .catch(function (error) {
           console.log(error.response);
