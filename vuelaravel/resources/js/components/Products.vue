@@ -1,7 +1,22 @@
 <template>
   <div class="form-group">
     <h2>Product list</h2>
-
+    <span>Sort by</span>
+    <select>
+      <option selected value="">All</option>
+      <option  v-for="option in options" v-bind:key="option.id" v-bind:value="option.value"
+      :data-hex="option.sortby">
+        {{ option.text }}
+      </option>
+    </select>
+    <span>Filter by category</span>
+    <select>
+      <option selected value="">All</option>
+      <option v-for="category in categories" v-bind:key="category.id">
+        {{ category.name }}
+      </option>
+    </select>
+    <hr/>
     <div class="card card-body" v-for="item in products" v-bind:key="item.id">
       <img
         src="https://picsum.photos/600/300/?image=25"
@@ -26,6 +41,12 @@ import axios from "axios";
 export default {
   data: function () {
     return {
+      options: [
+        { text: "Name : A to Z", value: "asc", id: "1", sortby: "name" },
+        { text: "Name : Z to A", value: "desc", id: "2", sortby: "name" },
+        { text: "Price : low to high", value: "asc", id: "3", sortby: "price" },
+        {text: "Price : high to low", value: "desc", id: "4", sortby: "price"},
+        ],
       products: [],
       categories: [],
     };

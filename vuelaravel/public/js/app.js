@@ -1933,10 +1933,46 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      options: [{
+        text: "Name : A to Z",
+        value: "asc",
+        id: "1",
+        sortby: "name"
+      }, {
+        text: "Name : Z to A",
+        value: "desc",
+        id: "2",
+        sortby: "name"
+      }, {
+        text: "Price : low to high",
+        value: "asc",
+        id: "3",
+        sortby: "price"
+      }, {
+        text: "Price : high to low",
+        value: "desc",
+        id: "4",
+        sortby: "price"
+      }],
       products: [],
       categories: []
     };
@@ -37579,6 +37615,46 @@ var render = function() {
     { staticClass: "form-group" },
     [
       _c("h2", [_vm._v("Product list")]),
+      _vm._v(" "),
+      _c("span", [_vm._v("Sort by")]),
+      _vm._v(" "),
+      _c(
+        "select",
+        [
+          _c("option", { attrs: { selected: "", value: "" } }, [_vm._v("All")]),
+          _vm._v(" "),
+          _vm._l(_vm.options, function(option) {
+            return _c(
+              "option",
+              {
+                key: option.id,
+                attrs: { "data-hex": option.sortby },
+                domProps: { value: option.value }
+              },
+              [_vm._v("\n      " + _vm._s(option.text) + "\n    ")]
+            )
+          })
+        ],
+        2
+      ),
+      _vm._v(" "),
+      _c("span", [_vm._v("Filter by category")]),
+      _vm._v(" "),
+      _c(
+        "select",
+        [
+          _c("option", { attrs: { selected: "", value: "" } }, [_vm._v("All")]),
+          _vm._v(" "),
+          _vm._l(_vm.categories, function(category) {
+            return _c("option", { key: category.id }, [
+              _vm._v("\n      " + _vm._s(category.name) + "\n    ")
+            ])
+          })
+        ],
+        2
+      ),
+      _vm._v(" "),
+      _c("hr"),
       _vm._v(" "),
       _vm._l(_vm.products, function(item) {
         return _c("div", { key: item.id, staticClass: "card card-body" }, [
