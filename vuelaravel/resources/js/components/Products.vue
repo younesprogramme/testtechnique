@@ -3,7 +3,9 @@
     <h2>Product list</h2>
     <form v-on:submit.prevent="addProduct">
       <div class="form-group">
+        <input id="id" v-model="product.id" type="hidden" name="id" />
         <input
+          class="form-control"
           id="name"
           v-model="product.name"
           type="text"
@@ -15,6 +17,7 @@
       <br />
       <div class="form-group">
         <input
+          class="form-control"
           id="price"
           v-model="product.price"
           type="text"
@@ -26,24 +29,35 @@
       <br />
       <div class="form-group">
         <textarea
+          class="form-control"
           id="description"
           v-model="product.description"
           type="text"
           name="description"
-          cols="70"
+          cols="51"
           placeholder="description"
         />
       </div>
-      <div>
-      
-      <strong>Upload Image:</strong>
-        <input type="file" class="form-control" v-on:change="onImageChange"  />
+      <br />
+      <div class="form-group">
+        <select
+          @change="selectCategory($event)"
+          class="form-select form-select-lg mb-3"
+        >
+          <option selected value="">Choose category</option>
+          <option v-for="category in categories" v-bind:key="category.id">
+            {{ category.name }}
+          </option>
+        </select>
       </div>
-      <br/>
+      <div>
+        <strong>Upload Image:</strong>
+        <input type="file" class="form-control" v-on:change="onImageChange" />
+      </div>
+      <br />
       <p>
         <input type="submit" value="Submit" class="btn btn-success" />
       </p>
-        
     </form>
     <span>Sort by</span>
     <select @change="sortBy($event)">
@@ -74,9 +88,7 @@
       <span
         ><strong>{{ item.price }} DH</strong></span
       >
-      <button class="btn btn-info" @click="editProduct(item.id)">
-        Edit
-      </button>
+      <button class="btn btn-info" @click="editProduct(item.id)">Edit</button>
       <button class="btn btn-warning" @click="deleteProduct(item.id)">
         Delete
       </button>
@@ -90,7 +102,7 @@ export default {
   data: function () {
     return {
       product:
-        { name: '', description: "" ,price:''}
+        {  id: '', name: '', description: "" ,price:'',category:''}
       ,
       options: [
         { text: "Name : A to Z", value: "asc", id: "1", sortby: "name" },
@@ -101,7 +113,8 @@ export default {
       products: [],
       categories: [],
       selectedImage:'',
-      imageUrl:[]
+      imageUrl:[],
+      upid:''
     };
   },
   created() {
@@ -130,8 +143,11 @@ export default {
           console.log(error.response);
         });
     },
+    selectCategory(event){
+      this.product.category= event.target.value;
+      console.log(this.product.category);
+    },
     filterbyCategory(event) {
-      console.log(event.target.value);
       axios
         .post("/api/filterbycategory", { category: event.target.value })
         .then((response) => {
@@ -168,14 +184,14 @@ export default {
         });
     },
      addProduct() {
+       if (this.product.id=="") {
      this.onUpload();
       axios
         .post("/api/createproduct", {
           name: this.product.name,
           description: this.product.description,
           price: this.product.price,
-          // image: this.image,
-          category: "this.product.category",
+          category: this.product.category,
           image: "../storage/"+this.imageUrl
         })
         .then((response) => {
@@ -185,15 +201,39 @@ export default {
         .catch(function (error) {
           console.log(error.response);
         });
+         }
+       else{
+         this.updateProduct(this.product.id);
+       }
     },
     editProduct(id){
-      
+
       axios.post("api/showproduct", { id: id })
         .then((response) => {
           //this.products = response.data;
           this.product=response.data;
-          console.log(response.data)
+
+          console.log(this.product.id)
          // this.loadProducts();
+        })
+        .catch(function (error) {
+          console.log(error.response);
+        });
+    },
+    updateProduct(id){
+      console.log(this.product.id);
+      axios.post("api/updateproduct", {
+          id: this.product.id,
+          name: this.product.name,
+          description: this.product.description,
+          price: this.product.price,
+          // image: this.image,
+          category: this.product.category
+          })
+
+        .then((response) => {
+          this.product=response.data;
+          console.log(response.data)
         })
         .catch(function (error) {
           console.log(error.response);

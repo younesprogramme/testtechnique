@@ -24,3 +24,4 @@ Route::post('deleteproduct', 'ProductController@delete');
 Route::post('createproduct', 'ProductController@store');
 Route::post('upload', 'ProductController@uploadFile');
 Route::post('showproduct', 'ProductController@show');
+Route::post('updateproduct', 'ProductController@update');

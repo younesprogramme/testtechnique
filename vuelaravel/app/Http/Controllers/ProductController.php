@@ -34,8 +34,8 @@ class ProductController extends Controller
         $orderby = $request->orderby;
         $sortby = $request->sortby;
         return $product = Product::orderBy($sortby,$orderby)->get();
-
     }
+
     public function delete(Request $request)
     {
         $id = $request->id;
@@ -44,19 +44,31 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-       
+        $Products = $this->model->create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'category' => $request->category,
+            'image' => $request->image
+            ]);
     }
 
     public function show(Request $request)
     {
         $id=$request->id;
-        //$Products = Product::find($id);
-       return   $Products = $this->model->show($id);;
+       return   $Products = $this->model->show($id);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-       $this->model->update($request->all(), $id);
+        $filldata = [
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'category' => $request->category,
+            'image' => $request->description
+            ];
+         $Products = $this->model->update($filldata,$request->id);
     }
 
     public function destroy($id)
