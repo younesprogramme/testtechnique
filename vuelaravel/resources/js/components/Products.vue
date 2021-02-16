@@ -1,6 +1,33 @@
 <template>
   <div class="form-group">
     <h2>Product list</h2>
+    <form v-on:submit.prevent="checkForm">
+      <div class="form-group"> 
+        <input id="name" v-model="product.name" type="text" name="name" placeholder="Name" size="50" />
+      </div>
+      <br/>
+      <div class="form-group"> 
+        <input id="price" v-model="product.price" type="text" name="price" placeholder="Price" size="50" />
+      </div>
+      <br/>
+      <div class="form-group"> 
+        <textarea
+          id="description"
+          v-model="product.description"
+          type="text"
+          name="description"
+          cols="70"
+          placeholder='description'
+        />
+      </div>
+     
+      <p>
+        <input type="file" v-on:change="" class="form-control" />
+      </p>
+      <p>
+        <input type="submit" value="Submit" class="btn btn-success" />
+      </p>
+    </form>
     <span>Sort by</span>
     <select @change="sortBy($event)">
       <option selected value="">All</option>
@@ -41,6 +68,9 @@ import axios from "axios";
 export default {
   data: function () {
     return {
+      product: 
+        { name: '', description: "" ,price:''}
+      ,
       options: [
         { text: "Name : A to Z", value: "asc", id: "1", sortby: "name" },
         { text: "Name : Z to A", value: "desc", id: "2", sortby: "name" },
