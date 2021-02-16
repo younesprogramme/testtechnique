@@ -1,38 +1,59 @@
 <template>
   <div class="form-group">
     <h2>Product list</h2>
-    <form v-on:submit.prevent="checkForm">
-      <div class="form-group"> 
-        <input id="name" v-model="product.name" type="text" name="name" placeholder="Name" size="50" />
+    <form v-on:submit.prevent="addProduct">
+      <div class="form-group">
+        <input
+          id="name"
+          v-model="product.name"
+          type="text"
+          name="name"
+          placeholder="Name"
+          size="50"
+        />
       </div>
-      <br/>
-      <div class="form-group"> 
-        <input id="price" v-model="product.price" type="text" name="price" placeholder="Price" size="50" />
+      <br />
+      <div class="form-group">
+        <input
+          id="price"
+          v-model="product.price"
+          type="text"
+          name="price"
+          placeholder="Price"
+          size="50"
+        />
       </div>
-      <br/>
-      <div class="form-group"> 
+      <br />
+      <div class="form-group">
         <textarea
           id="description"
           v-model="product.description"
           type="text"
           name="description"
           cols="70"
-          placeholder='description'
+          placeholder="description"
         />
       </div>
-     
-      <p>
-        <input type="file" v-on:change="" class="form-control" />
-      </p>
+      <div>
+      
+      <strong>Upload Image:</strong>
+        <input type="file" class="form-control" v-on:change="onImageChange"  />
+      </div>
+      <br/>
       <p>
         <input type="submit" value="Submit" class="btn btn-success" />
       </p>
+        
     </form>
     <span>Sort by</span>
     <select @change="sortBy($event)">
       <option selected value="">All</option>
-      <option  v-for="option in options" v-bind:key="option.id" v-bind:value="option.value"
-      :data-hex="option.sortby">
+      <option
+        v-for="option in options"
+        v-bind:key="option.id"
+        v-bind:value="option.value"
+        :data-hex="option.sortby"
+      >
         {{ option.text }}
       </option>
     </select>
@@ -43,14 +64,9 @@
         {{ category.name }}
       </option>
     </select>
-    <hr/>
+    <hr />
     <div class="card card-body" v-for="item in products" v-bind:key="item.id">
-      <img
-        src="https://picsum.photos/600/300/?image=25"
-        alt="Girl in a jacket"
-        width="150"
-        height="200"
-      />
+      <img :src="item.image" alt="Girl in a jacket" width="150" height="200" />
       <span
         ><strong>{{ item.name }} DH</strong></span
       >
@@ -58,7 +74,12 @@
       <span
         ><strong>{{ item.price }} DH</strong></span
       >
-      <button class="btn btn-warning" @click="deleteProduct(item.id)">Delete</button>
+      <button class="btn btn-info" @click="editProduct(item.id)">
+        Edit
+      </button>
+      <button class="btn btn-warning" @click="deleteProduct(item.id)">
+        Delete
+      </button>
     </div>
   </div>
 </template>
@@ -68,7 +89,7 @@ import axios from "axios";
 export default {
   data: function () {
     return {
-      product: 
+      product:
         { name: '', description: "" ,price:''}
       ,
       options: [
@@ -79,13 +100,15 @@ export default {
         ],
       products: [],
       categories: [],
+      selectedImage:'',
+      imageUrl:[]
     };
   },
   created() {
     this.loadProducts();
     this.loadCategories();
   },
-  methods: { 
+  methods: {
     loadCategories: function () {
       axios
         .get("/api/getcategories")
@@ -134,8 +157,7 @@ export default {
         });
     },
      deleteProduct(id) {
-      axios
-        .post("api/deleteproduct", { id: id })
+      axios.post("api/deleteproduct", { id: id })
         .then((response) => {
           this.products = response.data;
           alert('Product deleted')
@@ -144,6 +166,57 @@ export default {
         .catch(function (error) {
           console.log(error.response);
         });
+    },
+     addProduct() {
+     this.onUpload();
+      axios
+        .post("/api/createproduct", {
+          name: this.product.name,
+          description: this.product.description,
+          price: this.product.price,
+          // image: this.image,
+          category: "this.product.category",
+          image: "../storage/"+this.imageUrl
+        })
+        .then((response) => {
+          // console.log(response.data);
+          alert(response.data);
+        })
+        .catch(function (error) {
+          console.log(error.response);
+        });
+    },
+    editProduct(id){
+      
+      axios.post("api/showproduct", { id: id })
+        .then((response) => {
+          //this.products = response.data;
+          this.product=response.data;
+          console.log(response.data)
+         // this.loadProducts();
+        })
+        .catch(function (error) {
+          console.log(error.response);
+        });
+    },
+
+     onImageChange(e) {
+      this.selectedImage = event.target.files[0];
+       console.log(this.selectedImage );
+       },
+     onUpload() {
+      const fd = new FormData();
+      this.imageUrl="";
+      console.log(this.imageUrl);
+      const config = {
+        headers: { 'content-type': 'multipart/form-data' }
+        }
+      fd.append("image", this.selectedImage,config);
+      axios.post('/api/upload',fd)
+      .then(function (response) {
+
+        console.log(response.data.success);
+        })
     },
   },
 };

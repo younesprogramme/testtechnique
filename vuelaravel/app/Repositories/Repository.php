@@ -6,6 +6,7 @@ class Repository implements RepositoryInterface
 {
     // model property on class instances
     protected $model;
+    protected $fillable = ['name'];
 
     // Constructor to bind model to repo
     public function __construct(Model $model)
@@ -27,7 +28,7 @@ class Repository implements RepositoryInterface
     // create a new record in the database
     public function create(array $data)
     {
-        return $this->model->create($data);
+        $this->model->create($data);
     }
 
     // update record in the database
@@ -46,7 +47,7 @@ class Repository implements RepositoryInterface
     // show the record with the given id
     public function show($id)
     {
-        return $this->model-findOrFail($id);
+        return $this->model->findOrFail($id);
     }
 
     // Get the associated model

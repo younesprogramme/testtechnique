@@ -10,6 +10,7 @@ class ProductController extends Controller
 {
   // space that we can use the repository from
     protected $model;
+    protected $fillable = ['name'];
 
     public function __construct(Product $product)
     {
@@ -38,20 +39,19 @@ class ProductController extends Controller
     public function delete(Request $request)
     {
         $id = $request->id;
-        // Produit::whereIn('id', $request->id)->delete(); // $request->id MUST be an array
-        // return response()->json('Product deleted');
-        //return Product::where('id', $id)->first()->delete();
         return $Products = $this->model->delete($id);
     }
 
     public function store(Request $request)
     {
-        return $this->model->create($request->all());
+       
     }
 
-    public function show($id)
+    public function show(Request $request)
     {
-       return $this->model->show($id);
+        $id=$request->id;
+        //$Products = Product::find($id);
+       return   $Products = $this->model->show($id);;
     }
 
     public function update(Request $request, $id)
@@ -63,4 +63,12 @@ class ProductController extends Controller
     {
        return $this->model->delete($id);
     }
+    public function uploadFile(Request $request)
+{
+    $request->file('image')->store('ProductImages', 'public');
+          
+    // return response()->json(['success'=>'You have successfully upload file.']);
+    $data= $request->file('image')->store('ProductImages', 'public');
+    return response()->json(['success' => 'You have successfully uploaded']);
+}
 }

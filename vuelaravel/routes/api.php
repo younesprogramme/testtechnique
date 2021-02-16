@@ -21,3 +21,6 @@ Route::get('getproducts', 'ProductController@get');
 Route::post('filterbycategory', 'ProductController@filter');
 Route::post('sortby', 'ProductController@sort');
 Route::post('deleteproduct', 'ProductController@delete');
+Route::post('createproduct', 'ProductController@store');
+Route::post('upload', 'ProductController@uploadFile');
+Route::post('showproduct', 'ProductController@show');

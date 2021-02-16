@@ -1975,6 +1975,27 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2006,7 +2027,9 @@ __webpack_require__.r(__webpack_exports__);
         sortby: "price"
       }],
       products: [],
-      categories: []
+      categories: [],
+      selectedImage: '',
+      imageUrl: []
     };
   },
   created: function created() {
@@ -2071,6 +2094,53 @@ __webpack_require__.r(__webpack_exports__);
         _this5.loadProducts();
       })["catch"](function (error) {
         console.log(error.response);
+      });
+    },
+    addProduct: function addProduct() {
+      this.onUpload();
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/createproduct", {
+        name: this.product.name,
+        description: this.product.description,
+        price: this.product.price,
+        // image: this.image,
+        category: "this.product.category",
+        image: "../storage/" + this.imageUrl
+      }).then(function (response) {
+        // console.log(response.data);
+        alert(response.data);
+      })["catch"](function (error) {
+        console.log(error.response);
+      });
+    },
+    editProduct: function editProduct(id) {
+      var _this6 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("api/showproduct", {
+        id: id
+      }).then(function (response) {
+        //this.products = response.data;
+        _this6.product = response.data;
+        console.log(response.data); // this.loadProducts();
+      })["catch"](function (error) {
+        console.log(error.response);
+      });
+    },
+    onImageChange: function onImageChange(e) {
+      this.selectedImage = event.target.files[0];
+      console.log(this.selectedImage);
+    },
+    onUpload: function onUpload() {
+      var fd = new FormData();
+      this.imageUrl = "";
+      console.log(this.imageUrl);
+      var config = {
+        headers: {
+          'content-type': 'multipart/form-data'
+        }
+      };
+      fd.append("image", this.selectedImage, config);
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/upload', fd).then(function (response) {
+        console.log(response.data.success);
       });
     }
   }
@@ -37694,7 +37764,7 @@ var render = function() {
           on: {
             submit: function($event) {
               $event.preventDefault()
-              return _vm.checkForm($event)
+              return _vm.addProduct($event)
             }
           }
         },
@@ -37790,13 +37860,17 @@ var render = function() {
             })
           ]),
           _vm._v(" "),
-          _c("p", [
+          _c("div", [
+            _c("strong", [_vm._v("Upload Image:")]),
+            _vm._v(" "),
             _c("input", {
               staticClass: "form-control",
               attrs: { type: "file" },
-              on: { change: function($event) {} }
+              on: { change: _vm.onImageChange }
             })
           ]),
+          _vm._v(" "),
+          _c("br"),
           _vm._v(" "),
           _vm._m(0)
         ]
@@ -37860,7 +37934,7 @@ var render = function() {
         return _c("div", { key: item.id, staticClass: "card card-body" }, [
           _c("img", {
             attrs: {
-              src: "https://picsum.photos/600/300/?image=25",
+              src: item.image,
               alt: "Girl in a jacket",
               width: "150",
               height: "200"
@@ -37874,6 +37948,19 @@ var render = function() {
           _c(
             "button",
             {
+              staticClass: "btn btn-info",
+              on: {
+                click: function($event) {
+                  return _vm.editProduct(item.id)
+                }
+              }
+            },
+            [_vm._v("\n      Edit\n    ")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
               staticClass: "btn btn-warning",
               on: {
                 click: function($event) {
@@ -37881,7 +37968,7 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("Delete")]
+            [_vm._v("\n      Delete\n    ")]
           )
         ])
       })
