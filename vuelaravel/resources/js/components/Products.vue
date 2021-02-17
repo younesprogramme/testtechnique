@@ -22,6 +22,7 @@
           v-model="product.price"
           type="text"
           name="price"
+          @keypress="CheckDecimal($event)"
           placeholder="Price"
           size="50"
         />
@@ -90,6 +91,7 @@
         {{ category.name }}
       </option>
     </select>
+    <button class="btn btn-light" @click="loadProducts">All</button>
     <hr />
     <div class="card card-body" v-for="item in products" v-bind:key="item.id">
       <img :src=" item.image" alt="Girl in a jacket" width="150" height="200" />
@@ -303,17 +305,21 @@ export default {
       fd.append("image", this.selectedImage,config);
       axios.post('/api/upload',fd)
       .then( (response) =>{
-     
-       //document.getElementById("ctr").append(response.data);
        this.product.imageUrl=response.data;
         })
-        // console.log(this.errors);
       }
       else{
         alert('Please choose product image');
       }
       
     },
+     CheckDecimal(eve) 
+     {
+       if ((eve.which != 46 || $(this).val().indexOf('.') != -1) && (eve.which < 48 || eve.which > 57) || (eve.which == 46 && $(this).caret().start == 0)) {
+         eve.preventDefault();
+         }
+     } 
+
   },
 };
 </script>

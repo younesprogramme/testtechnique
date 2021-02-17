@@ -2020,6 +2020,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2242,11 +2244,15 @@ __webpack_require__.r(__webpack_exports__);
         };
         fd.append("image", this.selectedImage, config);
         axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/upload', fd).then(function (response) {
-          //document.getElementById("ctr").append(response.data);
           _this9.product.imageUrl = response.data;
-        }); // console.log(this.errors);
+        });
       } else {
         alert('Please choose product image');
+      }
+    },
+    CheckDecimal: function CheckDecimal(eve) {
+      if ((eve.which != 46 || $(this).val().indexOf('.') != -1) && (eve.which < 48 || eve.which > 57) || eve.which == 46 && $(this).caret().start == 0) {
+        eve.preventDefault();
       }
     }
   }
@@ -37948,6 +37954,9 @@ var render = function() {
               },
               domProps: { value: _vm.product.price },
               on: {
+                keypress: function($event) {
+                  return _vm.CheckDecimal($event)
+                },
                 input: function($event) {
                   if ($event.target.composing) {
                     return
@@ -38130,6 +38139,12 @@ var render = function() {
           })
         ],
         2
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        { staticClass: "btn btn-light", on: { click: _vm.loadProducts } },
+        [_vm._v("All")]
       ),
       _vm._v(" "),
       _c("hr"),
