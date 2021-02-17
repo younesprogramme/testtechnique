@@ -2008,10 +2008,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      errors: [],
       product: {
         id: '',
         name: '',
@@ -2052,6 +2059,28 @@ __webpack_require__.r(__webpack_exports__);
     this.loadCategories();
   },
   methods: {
+    checkForm: function checkForm(e) {
+      if (this.product.name && this.product.description && this.product.price) {
+        this.addProduct();
+        return true;
+      }
+
+      this.errors = [];
+
+      if (!this.product.name) {
+        this.errors.push('Name required.');
+      }
+
+      if (!this.product.description) {
+        this.errors.push('Description required.');
+      }
+
+      if (!this.product.price) {
+        this.errors.push('price required.');
+      }
+
+      e.preventDefault();
+    },
     loadCategories: function loadCategories() {
       var _this = this;
 
@@ -37803,7 +37832,7 @@ var render = function() {
           on: {
             submit: function($event) {
               $event.preventDefault()
-              return _vm.addProduct($event)
+              return _vm.checkForm($event)
             }
           }
         },
@@ -37964,6 +37993,20 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("br"),
+          _vm._v(" "),
+          _vm.errors.length
+            ? _c("p", [
+                _c("b", [_vm._v("Please correct the following error(s):")]),
+                _vm._v(" "),
+                _c(
+                  "ul",
+                  _vm._l(_vm.errors, function(error) {
+                    return _c("li", [_vm._v(_vm._s(error))])
+                  }),
+                  0
+                )
+              ])
+            : _vm._e(),
           _vm._v(" "),
           _vm._m(0)
         ]

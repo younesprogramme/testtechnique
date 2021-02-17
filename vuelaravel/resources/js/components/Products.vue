@@ -1,7 +1,7 @@
 <template>
   <div class="form-group">
     <h2>Product list</h2>
-    <form v-on:submit.prevent="addProduct">
+    <form v-on:submit.prevent="checkForm">
       <div class="form-group">
         <input id="id" v-model="product.id" type="hidden" name="id" />
         <input
@@ -54,7 +54,13 @@
         <strong>Upload Image:</strong>
         <input type="file" class="form-control" v-on:change="onImageChange" />
       </div>
-      <br />
+      <br/>
+      <p v-if="errors.length">
+    <b>Please correct the following error(s):</b>
+    <ul>
+      <li v-for="error in errors">{{ error }}</li>
+    </ul>
+  </p>
       <p>
         <input type="submit" value="Submit" class="btn btn-success" />
       </p>
@@ -101,6 +107,7 @@ import axios from "axios";
 export default {
   data: function () {
     return {
+      errors: [],
       product:
         {  id: '', name: '', description: "" ,price:'',category:''}
       ,
@@ -122,6 +129,23 @@ export default {
     this.loadCategories();
   },
   methods: {
+    checkForm: function (e) {
+      if (this.product.name && this.product.description && this.product.price) {
+        this.addProduct();
+        return true;
+      }
+      this.errors = [];
+      if (!this.product.name) {
+        this.errors.push('Name required.');
+      }
+      if (!this.product.description) {
+        this.errors.push('Description required.');
+      }
+      if (!this.product.price) {
+        this.errors.push('price required.');
+      }
+      e.preventDefault();
+    },
     loadCategories: function () {
       axios
         .get("/api/getcategories")
