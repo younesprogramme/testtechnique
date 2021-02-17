@@ -1990,38 +1990,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2066,28 +2034,6 @@ __webpack_require__.r(__webpack_exports__);
     this.loadCategories();
   },
   methods: {
-    checkForm: function checkForm(e) {
-      if (this.product.name && this.product.description && this.product.price) {
-        this.addProduct();
-        return true;
-      }
-
-      this.errors = [];
-
-      if (!this.product.name) {
-        this.errors.push('Name required.');
-      }
-
-      if (!this.product.description) {
-        this.errors.push('Description required.');
-      }
-
-      if (!this.product.price) {
-        this.errors.push('price required.');
-      }
-
-      e.preventDefault();
-    },
     loadCategories: function loadCategories() {
       var _this = this;
 
@@ -2157,7 +2103,6 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.product.id == "") {
         if (this.product.name && this.product.description && this.product.price && this.product.category && this.product.imageUrl) {
-          //this.onUpload();
           axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/createproduct", {
             name: this.product.name,
             description: this.product.description,
@@ -2165,7 +2110,6 @@ __webpack_require__.r(__webpack_exports__);
             category: this.product.category,
             image: "../storage/" + this.product.imageUrl
           }).then(function (response) {
-            // console.log(response.data);
             alert(response.data);
 
             _this6.loadProducts();
@@ -2207,7 +2151,7 @@ __webpack_require__.r(__webpack_exports__);
         id: id
       }).then(function (response) {
         _this7.product = response.data;
-        console.log(_this7.product.id); // this.loadProducts();
+        console.log(_this7.product.id);
       })["catch"](function (error) {
         console.log(error.response);
       });
@@ -38025,7 +37969,9 @@ var render = function() {
                 _vm._l(_vm.categories, function(category) {
                   return _c("option", { key: category.id }, [
                     _vm._v(
-                      "\n          " + _vm._s(category.name) + "\n        "
+                      "\n                    " +
+                        _vm._s(category.name) +
+                        "\n                  "
                     )
                   ])
                 })
@@ -38113,7 +38059,13 @@ var render = function() {
                 attrs: { "data-hex": option.sortby },
                 domProps: { value: option.value }
               },
-              [_vm._v("\n      " + _vm._s(option.text) + "\n    ")]
+              [
+                _vm._v(
+                  "\n                " +
+                    _vm._s(option.text) +
+                    "\n              "
+                )
+              ]
             )
           })
         ],
@@ -38138,7 +38090,11 @@ var render = function() {
           _vm._v(" "),
           _vm._l(_vm.categories, function(category) {
             return _c("option", { key: category.id }, [
-              _vm._v("\n      " + _vm._s(category.name) + "\n    ")
+              _vm._v(
+                "\n                " +
+                  _vm._s(category.name) +
+                  "\n              "
+              )
             ])
           })
         ],
@@ -38165,7 +38121,9 @@ var render = function() {
           }),
           _vm._v(" "),
           _c("span", [_c("strong", [_vm._v(_vm._s(item.name) + " DH")])]),
-          _vm._v("\n    " + _vm._s(item.description) + "\n    "),
+          _vm._v(
+            "\n              " + _vm._s(item.description) + "\n              "
+          ),
           _c("span", [_c("strong", [_vm._v(_vm._s(item.price) + " DH")])]),
           _vm._v(" "),
           _c(
@@ -38191,7 +38149,7 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("\n      Delete\n    ")]
+            [_vm._v("\n                Delete\n              ")]
           )
         ])
       })
