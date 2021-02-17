@@ -2156,7 +2156,7 @@ __webpack_require__.r(__webpack_exports__);
       console.log(this.product.imageUrl);
 
       if (this.product.id == "") {
-        if (this.product.name && this.product.description && this.product.price && this.product.category) {
+        if (this.product.name && this.product.description && this.product.price && this.product.category && this.product.imageUrl) {
           //this.onUpload();
           axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/createproduct", {
             name: this.product.name,
@@ -2192,6 +2192,10 @@ __webpack_require__.r(__webpack_exports__);
         if (!this.product.category) {
           this.errors.push('Chose Category');
         }
+
+        if (!this.product.imageUrl) {
+          this.errors.push('upload product image');
+        }
       } else {
         this.updateProduct(this.product.id);
       }
@@ -2219,15 +2223,15 @@ __webpack_require__.r(__webpack_exports__);
         category: this.product.category,
         image: "../storage/" + this.product.imageUrl
       }).then(function (response) {
-        _this8.product = response.data;
-        console.log('Product updated');
+        alert('Product updated');
+
+        _this8.loadProducts();
       })["catch"](function (error) {
         console.log(error.response);
       });
     },
     onImageChange: function onImageChange(e) {
-      this.selectedImage = event.target.files[0]; //  console.log(this.selectedImage );
-
+      this.selectedImage = e.target.files[0];
       this.onUpload();
     },
     onUpload: function onUpload() {

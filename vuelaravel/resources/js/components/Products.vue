@@ -217,7 +217,7 @@ export default {
      
       console.log(this.product.imageUrl);
       if (this.product.id=="") {
-       if (this.product.name && this.product.description && this.product.price && this.product.category) {
+       if (this.product.name && this.product.description && this.product.price && this.product.category && this.product.imageUrl) {
        
      //this.onUpload();
       axios
@@ -251,6 +251,9 @@ export default {
        if (!this.product.category) {
         this.errors.push('Chose Category');
       }
+       if (!this.product.imageUrl) {
+        this.errors.push('upload product image');
+      }
          }
        else{
          this.updateProduct(this.product.id);
@@ -282,8 +285,8 @@ export default {
           })
 
         .then((response) => {
-          this.product=response.data;
-          console.log('Product updated');
+          alert('Product updated');
+          this.loadProducts();
         })
         .catch(function (error) {
           console.log(error.response);
@@ -291,8 +294,7 @@ export default {
     },
 
      onImageChange(e) {
-      this.selectedImage = event.target.files[0];
-      //  console.log(this.selectedImage );
+      this.selectedImage = e.target.files[0];
       this.onUpload();
        },
      onUpload() {
