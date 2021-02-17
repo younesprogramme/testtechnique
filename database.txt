@@ -1,0 +1,26 @@
+<------------create DATABASE test------------- >
+
+CREATE DATABASE test;
+
+<------------create and delete a product from the command line------------- >
+
+
+INSERT INTO products (name, description ,price , category,  image) 
+VALUES ( 'shoes' ,'beautilul shoes' ,34 , 'clothes' ,'imageUrl');
+
+
+DELETE FROM products
+WHERE id= idvelue;
+
+
+<------------create and delete a category from the command line------------- >
+
+
+INSERT INTO categories(  name , parent_category) 
+VALUES ( 'Electronic ','Electronic');
+
+
+DELETE FROM categories
+WHERE id= idvelue;
+
+
