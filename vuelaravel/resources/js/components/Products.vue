@@ -1,7 +1,7 @@
 <template>
   <div class="form-group">
     <h2>Product list</h2>
-    <form v-on:submit.prevent="checkForm">
+    <form v-on:submit.prevent="addProduct">
       <div class="form-group">
         <input id="id" v-model="product.id" type="hidden" name="id" />
         <input
@@ -40,7 +40,7 @@
       </div>
       <br />
       <div class="form-group">
-        <select
+        <select id="mySelect"
           @change="selectCategory($event)"
           class="form-select form-select-lg mb-3"
         >
@@ -50,15 +50,21 @@
           </option>
         </select>
       </div>
+      <div class="form-group">
+        <input
+          v-model="product.imageUrl"
+          type="hidden"
+        />
+      </div>
       <div>
         <strong>Upload Image:</strong>
         <input type="file" class="form-control" v-on:change="onImageChange" />
       </div>
       <br/>
       <p v-if="errors.length">
-    <b>Please correct the following error(s):</b>
-    <ul>
-      <li v-for="error in errors">{{ error }}</li>
+      <b>Please correct the following error(s):</b>
+      <ul>
+      <li v-for="error in errors" v-bind:key="error"> {{ error }}</li>
     </ul>
   </p>
       <p>
@@ -67,7 +73,7 @@
     </form>
     <span>Sort by</span>
     <select @change="sortBy($event)">
-      <option selected value="">All</option>
+      <option selected disabled>Choose...</option>
       <option
         v-for="option in options"
         v-bind:key="option.id"
@@ -79,14 +85,14 @@
     </select>
     <span>Filter by category</span>
     <select @change="filterbyCategory($event)">
-      <option selected value="">All</option>
+      <option selected  disabled>Choose category</option>
       <option v-for="category in categories" v-bind:key="category.id">
         {{ category.name }}
       </option>
     </select>
     <hr />
     <div class="card card-body" v-for="item in products" v-bind:key="item.id">
-      <img :src="item.image" alt="Girl in a jacket" width="150" height="200" />
+      <img :src=" item.image" alt="Girl in a jacket" width="150" height="200" />
       <span
         ><strong>{{ item.name }} DH</strong></span
       >
@@ -109,7 +115,7 @@ export default {
     return {
       errors: [],
       product:
-        {  id: '', name: '', description: "" ,price:'',category:''}
+        {  id: '', name: '', description: "" ,price:'',category:'',imageUrl:''}
       ,
       options: [
         { text: "Name : A to Z", value: "asc", id: "1", sortby: "name" },
@@ -120,8 +126,6 @@ export default {
       products: [],
       categories: [],
       selectedImage:'',
-      imageUrl:[],
-      upid:''
     };
   },
   created() {
@@ -208,33 +212,54 @@ export default {
         });
     },
      addProduct() {
-       if (this.product.id=="") {
-     this.onUpload();
+     
+      console.log(this.product.imageUrl);
+      if (this.product.id=="") {
+       if (this.product.name && this.product.description && this.product.price && this.product.category) {
+       
+     //this.onUpload();
       axios
         .post("/api/createproduct", {
           name: this.product.name,
           description: this.product.description,
           price: this.product.price,
           category: this.product.category,
-          image: "../storage/"+this.imageUrl
+          image: "../storage/"+this.product.imageUrl
         })
         .then((response) => {
           // console.log(response.data);
           alert(response.data);
+          this.loadProducts();
         })
         .catch(function (error) {
           console.log(error.response);
         });
+        return true;
+       }
+        this.errors = [];
+      if (!this.product.name) {
+        this.errors.push('Name required.');
+      }
+      if (!this.product.description) {
+        this.errors.push('Description required.');
+      }
+      if (!this.product.price) {
+        this.errors.push('price required.');
+      }
+       if (!this.product.category) {
+        this.errors.push('Chose Category');
+      }
          }
        else{
          this.updateProduct(this.product.id);
        }
+      
+      
     },
     editProduct(id){
 
       axios.post("api/showproduct", { id: id })
         .then((response) => {
-          //this.products = response.data;
           this.product=response.data;
 
           console.log(this.product.id)
@@ -245,19 +270,18 @@ export default {
         });
     },
     updateProduct(id){
-      console.log(this.product.id);
       axios.post("api/updateproduct", {
           id: this.product.id,
           name: this.product.name,
           description: this.product.description,
           price: this.product.price,
-          // image: this.image,
-          category: this.product.category
+          category: this.product.category,
+          image: "../storage/"+this.product.imageUrl
           })
 
         .then((response) => {
           this.product=response.data;
-          console.log(response.data)
+          console.log('Product updated');
         })
         .catch(function (error) {
           console.log(error.response);
@@ -266,21 +290,29 @@ export default {
 
      onImageChange(e) {
       this.selectedImage = event.target.files[0];
-       console.log(this.selectedImage );
+      //  console.log(this.selectedImage );
+      this.onUpload();
        },
      onUpload() {
       const fd = new FormData();
-      this.imageUrl="";
-      console.log(this.imageUrl);
-      const config = {
+      if (this.selectedImage) {
+        console.log(this.selectedImage.name);
+        const config = {
         headers: { 'content-type': 'multipart/form-data' }
         }
       fd.append("image", this.selectedImage,config);
       axios.post('/api/upload',fd)
-      .then(function (response) {
-
-        console.log(response.data.success);
+      .then( (response) =>{
+     
+       //document.getElementById("ctr").append(response.data);
+       this.product.imageUrl=response.data;
         })
+        // console.log(this.errors);
+      }
+      else{
+        alert('Please choose product image');
+      }
+      
     },
   },
 };

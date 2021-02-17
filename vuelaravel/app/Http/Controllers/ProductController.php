@@ -51,6 +51,9 @@ class ProductController extends Controller
             'category' => $request->category,
             'image' => $request->image
             ]);
+            
+         return   'Product added successfully';
+            
     }
 
     public function show(Request $request)
@@ -66,7 +69,7 @@ class ProductController extends Controller
             'description' => $request->description,
             'price' => $request->price,
             'category' => $request->category,
-            'image' => $request->description
+            'image' => $request->image
             ];
          $Products = $this->model->update($filldata,$request->id);
     }
@@ -81,6 +84,6 @@ class ProductController extends Controller
           
     // return response()->json(['success'=>'You have successfully upload file.']);
     $data= $request->file('image')->store('ProductImages', 'public');
-    return response()->json(['success' => 'You have successfully uploaded']);
+    return $data;
 }
 }

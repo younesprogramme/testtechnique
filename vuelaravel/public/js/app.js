@@ -2014,6 +2014,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2024,7 +2030,8 @@ __webpack_require__.r(__webpack_exports__);
         name: '',
         description: "",
         price: '',
-        category: ''
+        category: '',
+        imageUrl: ''
       },
       options: [{
         text: "Name : A to Z",
@@ -2049,9 +2056,7 @@ __webpack_require__.r(__webpack_exports__);
       }],
       products: [],
       categories: [],
-      selectedImage: '',
-      imageUrl: [],
-      upid: ''
+      selectedImage: ''
     };
   },
   created: function created() {
@@ -2144,72 +2149,105 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     addProduct: function addProduct() {
+      var _this6 = this;
+
+      console.log(this.product.imageUrl);
+
       if (this.product.id == "") {
-        this.onUpload();
-        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/createproduct", {
-          name: this.product.name,
-          description: this.product.description,
-          price: this.product.price,
-          category: this.product.category,
-          image: "../storage/" + this.imageUrl
-        }).then(function (response) {
-          // console.log(response.data);
-          alert(response.data);
-        })["catch"](function (error) {
-          console.log(error.response);
-        });
+        if (this.product.name && this.product.description && this.product.price && this.product.category) {
+          //this.onUpload();
+          axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/createproduct", {
+            name: this.product.name,
+            description: this.product.description,
+            price: this.product.price,
+            category: this.product.category,
+            image: "../storage/" + this.product.imageUrl
+          }).then(function (response) {
+            // console.log(response.data);
+            alert(response.data);
+
+            _this6.loadProducts();
+          })["catch"](function (error) {
+            console.log(error.response);
+          });
+          return true;
+        }
+
+        this.errors = [];
+
+        if (!this.product.name) {
+          this.errors.push('Name required.');
+        }
+
+        if (!this.product.description) {
+          this.errors.push('Description required.');
+        }
+
+        if (!this.product.price) {
+          this.errors.push('price required.');
+        }
+
+        if (!this.product.category) {
+          this.errors.push('Chose Category');
+        }
       } else {
         this.updateProduct(this.product.id);
       }
     },
     editProduct: function editProduct(id) {
-      var _this6 = this;
+      var _this7 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("api/showproduct", {
         id: id
       }).then(function (response) {
-        //this.products = response.data;
-        _this6.product = response.data;
-        console.log(_this6.product.id); // this.loadProducts();
+        _this7.product = response.data;
+        console.log(_this7.product.id); // this.loadProducts();
       })["catch"](function (error) {
         console.log(error.response);
       });
     },
     updateProduct: function updateProduct(id) {
-      var _this7 = this;
+      var _this8 = this;
 
-      console.log(this.product.id);
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("api/updateproduct", {
         id: this.product.id,
         name: this.product.name,
         description: this.product.description,
         price: this.product.price,
-        // image: this.image,
-        category: this.product.category
+        category: this.product.category,
+        image: "../storage/" + this.product.imageUrl
       }).then(function (response) {
-        _this7.product = response.data;
-        console.log(response.data);
+        _this8.product = response.data;
+        console.log('Product updated');
       })["catch"](function (error) {
         console.log(error.response);
       });
     },
     onImageChange: function onImageChange(e) {
-      this.selectedImage = event.target.files[0];
-      console.log(this.selectedImage);
+      this.selectedImage = event.target.files[0]; //  console.log(this.selectedImage );
+
+      this.onUpload();
     },
     onUpload: function onUpload() {
+      var _this9 = this;
+
       var fd = new FormData();
-      this.imageUrl = "";
-      console.log(this.imageUrl);
-      var config = {
-        headers: {
-          'content-type': 'multipart/form-data'
-        }
-      };
-      fd.append("image", this.selectedImage, config);
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/upload', fd).then(function (response) {
-        console.log(response.data.success);
-      });
+
+      if (this.selectedImage) {
+        console.log(this.selectedImage.name);
+        var config = {
+          headers: {
+            'content-type': 'multipart/form-data'
+          }
+        };
+        fd.append("image", this.selectedImage, config);
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/upload', fd).then(function (response) {
+          //document.getElementById("ctr").append(response.data);
+          _this9.product.imageUrl = response.data;
+        }); // console.log(this.errors);
+      } else {
+        alert('Please choose product image');
+      }
     }
   }
 });
@@ -37832,7 +37870,7 @@ var render = function() {
           on: {
             submit: function($event) {
               $event.preventDefault()
-              return _vm.checkForm($event)
+              return _vm.addProduct($event)
             }
           }
         },
@@ -37959,6 +37997,7 @@ var render = function() {
               "select",
               {
                 staticClass: "form-select form-select-lg mb-3",
+                attrs: { id: "mySelect" },
                 on: {
                   change: function($event) {
                     return _vm.selectCategory($event)
@@ -37982,6 +38021,29 @@ var render = function() {
             )
           ]),
           _vm._v(" "),
+          _c("div", { staticClass: "form-group" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.product.imageUrl,
+                  expression: "product.imageUrl"
+                }
+              ],
+              attrs: { type: "hidden" },
+              domProps: { value: _vm.product.imageUrl },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.product, "imageUrl", $event.target.value)
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
           _c("div", [
             _c("strong", [_vm._v("Upload Image:")]),
             _vm._v(" "),
@@ -38001,7 +38063,9 @@ var render = function() {
                 _c(
                   "ul",
                   _vm._l(_vm.errors, function(error) {
-                    return _c("li", [_vm._v(_vm._s(error))])
+                    return _c("li", { key: error }, [
+                      _vm._v(" " + _vm._s(error))
+                    ])
                   }),
                   0
                 )
@@ -38024,7 +38088,9 @@ var render = function() {
           }
         },
         [
-          _c("option", { attrs: { selected: "", value: "" } }, [_vm._v("All")]),
+          _c("option", { attrs: { selected: "", disabled: "" } }, [
+            _vm._v("Choose...")
+          ]),
           _vm._v(" "),
           _vm._l(_vm.options, function(option) {
             return _c(
@@ -38053,7 +38119,9 @@ var render = function() {
           }
         },
         [
-          _c("option", { attrs: { selected: "", value: "" } }, [_vm._v("All")]),
+          _c("option", { attrs: { selected: "", disabled: "" } }, [
+            _vm._v("Choose category")
+          ]),
           _vm._v(" "),
           _vm._l(_vm.categories, function(category) {
             return _c("option", { key: category.id }, [
